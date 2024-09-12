@@ -1,0 +1,36 @@
+<Project>
+
+    <!-- Project -->
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <LangVersion>12</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <NoWarn>CA1305</NoWarn>
+    </PropertyGroup>
+
+    <!-- Documentation -->
+    <PropertyGroup Condition="$(Configuration) == 'Debug'">
+        <NoWarn>CS1591</NoWarn>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <!-- Analyzer -->
+    <PropertyGroup>
+        <AnalysisLevel>8.0</AnalysisLevel>
+        <AnalysisMode>Recommended</AnalysisMode>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    </PropertyGroup>
+
+    <!-- Assembly Meta -->
+    <PropertyGroup>
+        <Authors>Alisa</Authors>
+        <Copyright>Copyright © 2024 Alisa and Contributors.</Copyright>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/AlisaAkiron/owobot.git</RepositoryUrl>
+        <NeutralLanguage>en-US</NeutralLanguage>
+    </PropertyGroup>
+
+</Project>
