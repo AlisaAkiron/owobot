@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\owoBot.Aspire.ServiceDefaults\owoBot.Aspire.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>

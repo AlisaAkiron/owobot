@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <None Update="appsettings.yaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.development.yaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\owoBot.Application.Command\owoBot.Application.Command.csproj" />
+    <ProjectReference Include="..\owoBot.Hosting\owoBot.Hosting.csproj" />
+  </ItemGroup>
+</Project>

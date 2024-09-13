@@ -1,0 +1,7 @@
+Discord:
+  BotToken: YOUR_BOT_TOKEN
+Network:
+  Proxy:
+    Enabled: false
+    Host: YOUR_PROXY_HOST
+
