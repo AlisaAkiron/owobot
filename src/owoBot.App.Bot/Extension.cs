@@ -72,6 +72,13 @@ public static class Extension
         var networkProxyHost = configuration.GetValue("Network:Proxy:Host", string.Empty);
         var webProxy = networkProxyEnabled ? new WebProxy(networkProxyHost) : null;
 
+        builder.Services.AddHttpClient("Default")
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                Proxy = webProxy,
+                UseProxy = networkProxyEnabled
+            });
+
         builder.Services.AddHttpClient("DiscordRest", client =>
             {
                 client.DefaultRequestHeaders.Add("accept-encoding", "gzip, deflate");

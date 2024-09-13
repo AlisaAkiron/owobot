@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using owoBot.Domain.Entities;
 
 namespace owoBot.EntityFrameworkCore;
 
@@ -10,6 +11,9 @@ public partial class OWODbContext : DbContext
 {
     private readonly IConfiguration _configuration;
     private readonly IHostEnvironment _hostEnvironment;
+
+    public DbSet<CurrencyInfo> CurrencyInfos => Set<CurrencyInfo>();
+    public DbSet<ExchangeRate> ExchangeRates => Set<ExchangeRate>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

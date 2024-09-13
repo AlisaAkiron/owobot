@@ -27,6 +27,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "owoBot.Application.Command"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "owoBot.EntityFrameworkCore", "src\owoBot.EntityFrameworkCore\owoBot.EntityFrameworkCore.csproj", "{4E0EB50D-ECA4-4C07-94E0-F4DF479234A5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Module", "Module", "{D9B7205E-ED06-4CCC-A943-7C4FF088FED0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "owoBot.Module.OpenExchangeRate", "src\owoBot.Module.OpenExchangeRate\owoBot.Module.OpenExchangeRate.csproj", "{2057F784-A1DC-49BC-AF14-8DA88F6EB96E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +40,7 @@ Global
 		{532EE355-8642-4B76-B144-F3A0C77B066F} = {7F041E2B-3D9B-4CA8-BBA3-7DC592218310}
 		{BB78068E-D03F-4202-BDEA-33828F977B77} = {7F041E2B-3D9B-4CA8-BBA3-7DC592218310}
 		{3E44477D-53E8-4105-B30B-89766C3F28C1} = {80C6D812-8694-4B5B-A8AD-44314E0F2126}
+		{2057F784-A1DC-49BC-AF14-8DA88F6EB96E} = {D9B7205E-ED06-4CCC-A943-7C4FF088FED0}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{532EE355-8642-4B76-B144-F3A0C77B066F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -62,5 +67,9 @@ Global
 		{4E0EB50D-ECA4-4C07-94E0-F4DF479234A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E0EB50D-ECA4-4C07-94E0-F4DF479234A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E0EB50D-ECA4-4C07-94E0-F4DF479234A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2057F784-A1DC-49BC-AF14-8DA88F6EB96E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2057F784-A1DC-49BC-AF14-8DA88F6EB96E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2057F784-A1DC-49BC-AF14-8DA88F6EB96E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2057F784-A1DC-49BC-AF14-8DA88F6EB96E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
