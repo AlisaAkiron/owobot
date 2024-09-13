@@ -9,6 +9,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\owoBot.Application.Command\owoBot.Application.Command.csproj" />
-    <ProjectReference Include="..\owoBot.Hosting\owoBot.Hosting.csproj" />
+    <ProjectReference Include="..\owoBot.Aspire.ServiceDefaults\owoBot.Aspire.ServiceDefaults.csproj" />
   </ItemGroup>
 </Project>
