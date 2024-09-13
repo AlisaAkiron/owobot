@@ -58,7 +58,8 @@ public static class Extension
 
         builder.Services.AddSingleton<InteractionServiceConfig>(_ => new InteractionServiceConfig
         {
-            UseCompiledLambda = true
+            UseCompiledLambda = true,
+            DefaultRunMode = RunMode.Sync
         });
         builder.Services.AddSingleton<InteractionService>();
 

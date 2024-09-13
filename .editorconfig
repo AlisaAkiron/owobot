@@ -37,6 +37,10 @@ indent_size = 2
 end_of_line = lf
 indent_size = 2
 
+[**/Migrations/**.cs]
+generated_code = true
+dotnet_analyzer_diagnostic.severity = none
+
 [*.{cs,vb}]
 #### Naming styles ####
 

@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace owoBot.Module.OpenExchangeRate.Models;
+﻿namespace owoBot.Module.OpenExchangeRate.Models;
 
 public record ExchangeResult
 {
@@ -14,16 +12,16 @@ public record ExchangeResult
 
     public decimal TargetAmount { get; init; }
 
-    public List<IntermediaExchangeResult>? IntermediateResults { get; init; }
+    public decimal Rate { get; init; }
+
+    public DateTimeOffset? Time { get; init; }
 
     public string? ErrorMessage { get; init; }
-
-    public bool HasIntermediateResults => IntermediateResults is not null && IntermediateResults.Count != 0;
 
     public static ExchangeResult Success(
         decimal sourceAmount, string source,
         decimal targetAmount, string target,
-        List<IntermediaExchangeResult>? intermediateResults = null)
+        decimal rate, DateTimeOffset time)
         => new()
         {
             IsSuccess = true,
@@ -31,7 +29,8 @@ public record ExchangeResult
             Target = target,
             SourceAmount = sourceAmount,
             TargetAmount = targetAmount,
-            IntermediateResults = intermediateResults
+            Rate = rate,
+            Time = time
         };
 
     public static ExchangeResult Fail(decimal sourceAmount, string source, string target, string errorMessage)
@@ -43,28 +42,4 @@ public record ExchangeResult
             SourceAmount = sourceAmount,
             ErrorMessage = errorMessage
         };
-
-    /// <inheritdoc />
-    public override string ToString()
-    {
-        if (IsSuccess is false)
-        {
-            return ErrorMessage ?? "Unknown error";
-        }
-
-        var sb = new StringBuilder();
-        sb.Append($"{SourceAmount:C} {Source}");
-        if (HasIntermediateResults)
-        {
-            foreach (var result in IntermediateResults!)
-            {
-                sb.Append($" -> {result.Amount:C} {result.Currency}");
-            }
-        }
-        sb.Append($" -> {TargetAmount:C} {Target}");
-
-        return sb.ToString();
-    }
 }
-
-public record IntermediaExchangeResult(decimal Amount, string Currency);

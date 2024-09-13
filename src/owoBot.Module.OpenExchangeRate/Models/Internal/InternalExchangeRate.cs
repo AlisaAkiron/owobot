@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using owoBot.Module.OpenExchangeRate.Converters;
 
 namespace owoBot.Module.OpenExchangeRate.Models.Internal;
 
-internal record InternalExchangeRate
+internal sealed record InternalExchangeRate
 {
     [JsonPropertyName("disclaimer")]
     public string Disclaimer { get; set; } = string.Empty;
@@ -11,6 +12,7 @@ internal record InternalExchangeRate
     public string License { get; set; } = string.Empty;
 
     [JsonPropertyName("timestamp")]
+    [JsonConverter(typeof(UnixTimestampToDateTimeOffsetConverter))]
     public DateTimeOffset Timestamp { get; set; }
 
     [JsonPropertyName("base")]

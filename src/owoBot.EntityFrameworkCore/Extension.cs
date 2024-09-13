@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
 using OpenTelemetry.Metrics;
@@ -9,7 +11,18 @@ public static class Extension
 {
     public static void AddEntityFrameworkCore(this IHostApplicationBuilder builder)
     {
-        builder.Services.AddDbContext<OWODbContext>();
+        var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
+
+        builder.Services.AddDbContext<OWODbContext>(options =>
+        {
+            options.UseNpgsql(connectionString);
+
+            if (builder.Environment.IsProduction() is false)
+            {
+                options.EnableDetailedErrors();
+                options.EnableSensitiveDataLogging();
+            }
+        });
 
         builder.Services
             .AddHealthChecks()

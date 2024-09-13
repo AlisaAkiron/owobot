@@ -43,4 +43,13 @@ public static class DatabaseExtensions
 
         await dbContext.SaveChangesAsync();
     }
+
+    public static async Task UpdateCurrencyInfoAsync(this OWODbContext dbContext, List<CurrencyInfo> currencyInfos)
+    {
+        await dbContext.CurrencyInfos.ExecuteDeleteAsync();
+
+        await dbContext.CurrencyInfos.AddRangeAsync(currencyInfos);
+
+        await dbContext.SaveChangesAsync();
+    }
 }

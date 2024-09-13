@@ -11,4 +11,10 @@
     <ProjectReference Include="..\owoBot.Application.Command\owoBot.Application.Command.csproj" />
     <ProjectReference Include="..\owoBot.Aspire.ServiceDefaults\owoBot.Aspire.ServiceDefaults.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 </Project>

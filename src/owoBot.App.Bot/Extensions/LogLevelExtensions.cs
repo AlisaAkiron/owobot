@@ -3,7 +3,7 @@ using Serilog.Events;
 
 namespace owoBot.App.Bot.Extensions;
 
-public static class LogLevelExtension
+public static class LogLevelExtensions
 {
     public static LogLevel MapToLogLevel(this LogSeverity severity)
     {

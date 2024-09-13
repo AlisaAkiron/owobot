@@ -10,4 +10,7 @@ public record CurrencyInfo
 
     [Column("name")]
     public string Name { get; set; } = string.Empty;
+
+    [Column("last_updated")]
+    public DateTimeOffset LastUpdated { get; set; }
 }

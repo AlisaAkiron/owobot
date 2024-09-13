@@ -1,4 +1,5 @@
 using owoBot.App.Bot;
+using owoBot.App.Bot.Extensions;
 using owoBot.Aspire.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,4 +9,6 @@ builder.AddBotServices();
 
 var app = builder.Build();
 
-app.Run();
+await app.MigrateDatabaseAsync();
+
+await app.RunAsync();

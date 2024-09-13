@@ -72,7 +72,7 @@ public partial class OpenExchangeRateClient
         var ct = cancellationToken ?? CancellationToken.None;
 
         var httpClient = _httpClientFactory.CreateClient("Default");
-        var token = _configuration["Modules:OpenExchangeRate:Token"];
+        var token = _configuration["Modules:OpenExchangeRate:AppId"];
         request.Headers.Add("Authorization", $"Token {token}");
         var response = await httpClient.SendAsync(request, ct);
 

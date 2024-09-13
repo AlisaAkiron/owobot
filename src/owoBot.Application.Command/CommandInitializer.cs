@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using Discord.Interactions;
 using Discord.Rest;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using owoBot.Domain.Abstract;
@@ -31,7 +32,8 @@ public partial class CommandInitializer : IDiscordApplicationInitializer
     {
         discordRestClient.LoggedIn += async () =>
         {
-            var registeredModules = await _interactionService.AddModulesAsync(typeof(CommandInitializer).Assembly, _serviceProvider);
+            using var scope = _serviceProvider.CreateScope();
+            var registeredModules = await _interactionService.AddModulesAsync(typeof(CommandInitializer).Assembly, scope.ServiceProvider);
             foreach (var module in registeredModules)
             {
                 var hasDevOnly = module.Attributes.FirstOrDefault(x => x is DevOnlyAttribute);
@@ -71,7 +73,8 @@ public partial class CommandInitializer : IDiscordApplicationInitializer
 
         try
         {
-            var result = await _interactionService.ExecuteCommandAsync(ctx, _serviceProvider);
+            using var scope = _serviceProvider.CreateScope();
+            var result = await _interactionService.ExecuteCommandAsync(ctx, scope.ServiceProvider);
             if (result.IsSuccess is false)
             {
                 _logger.LogWarning("Error executing command {CommandName}: {ErrorReason}", interaction.CommandName, result.ErrorReason);
