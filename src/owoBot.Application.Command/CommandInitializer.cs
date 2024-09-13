@@ -5,8 +5,8 @@ using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using owoBot.Application.Command.Commands;
 using owoBot.Domain.Abstract;
+using owoBot.Domain.Attributes;
 using owoBot.Domain.Constants;
 
 namespace owoBot.Application.Command;
@@ -31,10 +31,14 @@ public partial class CommandInitializer : IDiscordApplicationInitializer
     {
         discordRestClient.LoggedIn += async () =>
         {
-            await _interactionService.AddModulesAsync(typeof(CommandInitializer).Assembly, _serviceProvider);
-            if (_hostEnvironment.IsProduction())
+            var registeredModules = await _interactionService.AddModulesAsync(typeof(CommandInitializer).Assembly, _serviceProvider);
+            foreach (var module in registeredModules)
             {
-                await _interactionService.RemoveModuleAsync<DevCommands>();
+                var hasDevOnly = module.Attributes.FirstOrDefault(x => x is DevOnlyAttribute);
+                if (hasDevOnly is not null && _hostEnvironment.IsDevelopment() is false)
+                {
+                    await _interactionService.RemoveModuleAsync(module);
+                }
             }
 
             foreach (var module in _interactionService.Modules)
