@@ -4,7 +4,10 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\owoBot.Roslyn.SourceGenerator\owoBot.Roslyn.SourceGenerator.csproj" />
+    <ProjectReference Include="..\owoBot.Roslyn.SourceGenerator\owoBot.Roslyn.SourceGenerator.csproj">
+      <OutputItemType>Analyzer</OutputItemType>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\static\currencies.csv" />

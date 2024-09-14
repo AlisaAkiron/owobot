@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using System.Text;
-using CsvHelper;
+﻿using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
@@ -28,14 +26,12 @@ public class CurrenciesGenerator : IIncrementalGenerator
 
     private static string GenerateCurrencyCode(string text)
     {
-        using var textStream = new StringReader(text);
-        using var csv = new CsvReader(textStream, CultureInfo.InvariantCulture);
-        var records = csv.GetRecords<InternalCsvCurrencyCode>().ToList();
+        var records = ParseCsv(text);
 
         var codes = records
             .Select(x =>
                 $"""
-                public static readonly CurrencyCode {x.Code} = new("{x.Code}", "{x.Name}", "{x.Symbol}", "{x.MainCountryOrRegion}", "{x.Flag}", {x.Digits});
+                public static readonly CurrencyCode {x.Code} = new("{x.Code}", "{x.Name}", "{x.Symbol}", "{x.CountryOrRegion}", "{x.Flag}", {x.Digits});
                 """);
 
         var sb = new StringBuilder();
@@ -55,6 +51,38 @@ public class CurrenciesGenerator : IIncrementalGenerator
                }
                """;
     }
+
+    private static List<InternalCsvCurrencyCode> ParseCsv(string text)
+    {
+        var lines = text.Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries);
+        var headers = lines[0].Split(',');
+
+        var currencyCodes = new List<InternalCsvCurrencyCode>();
+
+        for (var i = 1; i < lines.Length; i++)
+        {
+            var fields = lines[i].Split(',');
+
+            var code = fields[Array.IndexOf(headers, "Code")];
+            var name = fields[Array.IndexOf(headers, "Name")];
+            var symbol = fields[Array.IndexOf(headers, "Symbol")];
+            var country = fields[Array.IndexOf(headers, "CountryOrRegion")];
+            var flag = fields[Array.IndexOf(headers, "Flag")];
+            var digits = int.Parse(fields[Array.IndexOf(headers, "Digits")]);
+
+            currencyCodes.Add(new InternalCsvCurrencyCode
+            {
+                Code = code,
+                Name = name,
+                Flag = flag,
+                Symbol = symbol,
+                CountryOrRegion = country,
+                Digits = digits
+            });
+        }
+
+        return currencyCodes;
+    }
 }
 
 internal sealed record InternalCsvCurrencyCode
@@ -67,7 +95,7 @@ internal sealed record InternalCsvCurrencyCode
 
     public string Symbol { get; set; } = string.Empty;
 
-    public string MainCountryOrRegion { get; set; } = string.Empty;
+    public string CountryOrRegion { get; set; } = string.Empty;
 
     public int Digits { get; set; }
 }

@@ -10,7 +10,7 @@ public readonly partial record struct CurrencyCode
 
     public string Symbol { get; } = string.Empty;
 
-    public string MainCountryOrRegion { get; } = string.Empty;
+    public string CountryOrRegion { get; } = string.Empty;
 
     public int Digits { get; init; }
 
@@ -21,12 +21,12 @@ public readonly partial record struct CurrencyCode
         Code = code;
     }
 
-    private CurrencyCode(string code, string name, string symbol, string cor, string flag, int digits)
+    private CurrencyCode(string code, string name, string symbol, string countryOrRegion, string flag, int digits)
     {
         Code = code;
         Name = name;
         Symbol = symbol;
-        MainCountryOrRegion = cor;
+        CountryOrRegion = countryOrRegion;
         Flag = flag;
         Digits = digits;
         IsValid = true;
@@ -48,6 +48,4 @@ public readonly partial record struct CurrencyCode
     {
         return Code;
     }
-
-    public static readonly CurrencyCode USD = new("USD", "United States Dollar", "$", "United States", "🇺🇸", 2);
 }
