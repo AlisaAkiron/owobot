@@ -3,10 +3,9 @@
 COPY . /build
 WORKDIR /build
 
-RUN dotnet workload restore
 RUN dotnet publish ./src/owoBot.App.Bot -c Release -o /artifacts -p:ContinuousIntegrationBuild=true
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
 COPY --from=build /artifacts /app
 
