@@ -1,0 +1,11 @@
+services:
+  owobot:
+    image: ghcr.io/alisaakiron/owobot:latest
+    container_name: owobot
+    restart: unless-stopped
+    environment:
+      - ConnectionStrings__PostgreSQL=
+      - Discord__BotToken=
+      - Network__Proxy__Enabled=
+      - Network__Proxy__Host=
+      - Modules__ExchangeRateApi__ApiKey=
