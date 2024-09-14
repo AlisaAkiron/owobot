@@ -24,6 +24,7 @@ public partial class CommandInitializer : IDiscordApplicationInitializer
     public Task SocketInitializer(DiscordSocketClient discordSocketClient)
     {
         discordSocketClient.SlashCommandExecuted += HandleSlashCommandAsync;
+        discordSocketClient.AutocompleteExecuted += HandleAutoCompleteAsync;
 
         return Task.CompletedTask;
     }
@@ -86,6 +87,44 @@ public partial class CommandInitializer : IDiscordApplicationInitializer
         catch (Exception e)
         {
             _logger.LogError(e, "Error executing command {CommandName}", interaction.CommandName);
+
+            activity?.AddTag("exception", e.ToString());
+            activity?.SetStatus(ActivityStatusCode.Error);
+        }
+    }
+
+    [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
+    private async Task HandleAutoCompleteAsync(SocketAutocompleteInteraction interaction)
+    {
+        var commandName = interaction.Data?.CommandName ?? "null";
+        using var activity = ActivitySources.CommandAutocompletionActivitySource.StartActivity(commandName, ActivityKind.Server);
+
+        activity?.AddTag("interaction_id", interaction.Id.ToString());
+        activity?.AddTag("command_name", interaction.Data?.CommandName);
+        activity?.AddTag("command_id", interaction.Data?.CommandId.ToString());
+        activity?.AddTag("user_id", interaction.User?.Id.ToString());
+        activity?.AddTag("guild_id", interaction.GuildId?.ToString());
+        activity?.AddTag("channel_id", interaction.Channel?.Id.ToString());
+
+        var ctx = new SocketInteractionContext<SocketAutocompleteInteraction>(_discordSocketClient, interaction);
+
+        activity?.AddEvent(new ActivityEvent("Execute"));
+
+        try
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var result = await _interactionService.ExecuteCommandAsync(ctx, scope.ServiceProvider);
+            if (result.IsSuccess is false)
+            {
+                _logger.LogWarning("Error executing command {CommandName}: {ErrorReason}", commandName, result.ErrorReason);
+
+                activity?.AddTag("error", result.ErrorReason);
+                activity?.SetStatus(ActivityStatusCode.Error);
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error executing command {CommandName}", commandName);
 
             activity?.AddTag("exception", e.ToString());
             activity?.SetStatus(ActivityStatusCode.Error);

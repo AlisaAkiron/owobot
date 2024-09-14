@@ -4,48 +4,53 @@ public readonly partial record struct CurrencyCode
 {
     public string Code { get; }
 
-    public string Name { get; } = string.Empty;
+    public string Name { get; private init; } = string.Empty;
 
-    public string Flag { get; } = string.Empty;
+    public int Digits { get; }
 
-    public string Symbol { get; } = string.Empty;
+    public string DisplayFormat => CanFormat ? $"`{Code}` - {Name}" : throw new NotSupportedException();
 
-    public string CountryOrRegion { get; } = string.Empty;
+    public bool CanFormat { get; }
 
-    public int Digits { get; init; }
-
-    public bool IsValid { get; init; }
-
-    private CurrencyCode(string code)
+    private CurrencyCode(string code, string? name = null)
     {
         Code = code;
+        Name = name ?? string.Empty;
     }
 
-    private CurrencyCode(string code, string name, string symbol, string countryOrRegion, string flag, int digits)
+    private CurrencyCode(string code, string name, int digits)
     {
         Code = code;
         Name = name;
-        Symbol = symbol;
-        CountryOrRegion = countryOrRegion;
-        Flag = flag;
         Digits = digits;
-        IsValid = true;
+        CanFormat = true;
     }
 
-    public Currency Have(decimal amount)
+    public Money Have(decimal amount)
     {
-        return Currency.From(amount, this);
+        return Money.From(amount, this);
     }
 
-    public static CurrencyCode From(string code)
+    public static CurrencyCode From(string code, string? name = null)
     {
-        return new CurrencyCode(code);
+        if (AllCurrencies.Any(x => x.Code == code) is false)
+        {
+            return new CurrencyCode(code, name);
+        }
+
+        var currencyCode = AllCurrencies.First(x => x.Code == code);
+        if (name is null)
+        {
+            return currencyCode;
+        }
+
+        return currencyCode with { Name = name };
     }
 
     public static implicit operator string(CurrencyCode currencyCode) => currencyCode.Code;
 
     public override string ToString()
     {
-        return Code;
+        return Code.ToUpperInvariant();
     }
 }

@@ -4,10 +4,10 @@ using owoBot.Domain.Entities;
 
 namespace owoBot.EntityFrameworkCore.Configurator;
 
-public class CurrencyInfoConfigurator : IEntityTypeConfiguration<CurrencyInfo>
+public class CacheConfigurator : IEntityTypeConfiguration<Cache>
 {
-    public void Configure(EntityTypeBuilder<CurrencyInfo> builder)
+    public void Configure(EntityTypeBuilder<Cache> builder)
     {
-        builder.HasKey(x => x.Code);
+        builder.HasKey(x => x.Key);
     }
 }

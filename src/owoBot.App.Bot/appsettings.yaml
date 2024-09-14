@@ -5,9 +5,5 @@ Network:
     Enabled: false
     Host: YOUR_PROXY_HOST
 Modules:
-  OpenExchangeRate:
-    AppId: YOUR_OPEN_EXCHANGE_RATE_APP_ID
-    Plan: Free
-    ForceUpdate:
-      Currencies: 30d
-      ExchangeRates: 1h
+  ExchangeRateApi:
+    ApiKey: YOUR_API_KEY

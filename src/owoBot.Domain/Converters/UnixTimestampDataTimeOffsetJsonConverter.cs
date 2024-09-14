@@ -1,9 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace owoBot.Module.OpenExchangeRate.Converters;
+namespace owoBot.Domain.Converters;
 
-public class UnixTimestampToDateTimeOffsetConverter : JsonConverter<DateTimeOffset>
+public class UnixTimestampDataTimeOffsetJsonConverter : JsonConverter<DateTimeOffset>
 {
     public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
@@ -12,8 +12,8 @@ public class UnixTimestampToDateTimeOffsetConverter : JsonConverter<DateTimeOffs
             throw new JsonException();
         }
 
-        var timestamp = reader.GetInt64();
-        return DateTimeOffset.FromUnixTimeSeconds(timestamp);
+        var unixTimestamp = reader.GetInt64();
+        return DateTimeOffset.FromUnixTimeSeconds(unixTimestamp);
     }
 
     public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)

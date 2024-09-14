@@ -10,6 +10,7 @@ public class OWODbContext : DbContext
     {
     }
 
+    public DbSet<Cache> Caches => Set<Cache>();
     public DbSet<CurrencyInfo> CurrencyInfos => Set<CurrencyInfo>();
     public DbSet<ExchangeRate> ExchangeRates => Set<ExchangeRate>();
 

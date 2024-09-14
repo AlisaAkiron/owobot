@@ -31,7 +31,7 @@ public class CurrenciesGenerator : IIncrementalGenerator
         var codes = records
             .Select(x =>
                 $"""
-                public static readonly CurrencyCode {x.Code} = new("{x.Code}", "{x.Name}", "{x.Symbol}", "{x.CountryOrRegion}", "{x.Flag}", {x.Digits});
+                public static readonly CurrencyCode {x.Code} = new("{x.Code}", "{x.Name}", {x.Digits});
                 """);
 
         var sb = new StringBuilder();
@@ -40,7 +40,7 @@ public class CurrenciesGenerator : IIncrementalGenerator
             sb.Append("    ");
             sb.AppendLine(code);
         }
-        var definitions = sb.ToString();
+        var currencyDefinitions = sb.ToString();
 
         return $$"""
                //------------------------------------------------------------------------------
@@ -55,7 +55,11 @@ public class CurrenciesGenerator : IIncrementalGenerator
 
                public readonly partial record struct CurrencyCode
                {
-               {{definitions}}
+               {{currencyDefinitions}}
+                   public static IEnumerable<CurrencyCode> AllCurrencies => new[]
+                   {
+                       {{string.Join(", ", records.Select(x => x.Code))}}
+                   };
                }
                """;
     }
@@ -73,18 +77,12 @@ public class CurrenciesGenerator : IIncrementalGenerator
 
             var code = fields[Array.IndexOf(headers, "Code")];
             var name = fields[Array.IndexOf(headers, "Name")];
-            var symbol = fields[Array.IndexOf(headers, "Symbol")];
-            var country = fields[Array.IndexOf(headers, "CountryOrRegion")];
-            var flag = fields[Array.IndexOf(headers, "Flag")];
             var digits = int.Parse(fields[Array.IndexOf(headers, "Digits")]);
 
             currencyCodes.Add(new InternalCsvCurrencyCode
             {
                 Code = code,
                 Name = name,
-                Flag = flag,
-                Symbol = symbol,
-                CountryOrRegion = country,
                 Digits = digits
             });
         }
@@ -98,12 +96,6 @@ internal sealed record InternalCsvCurrencyCode
     public string Code { get; set; }  = string.Empty;
 
     public string Name { get; set; } = string.Empty;
-
-    public string Flag { get; set; } = string.Empty;
-
-    public string Symbol { get; set; } = string.Empty;
-
-    public string CountryOrRegion { get; set; } = string.Empty;
 
     public int Digits { get; set; }
 }

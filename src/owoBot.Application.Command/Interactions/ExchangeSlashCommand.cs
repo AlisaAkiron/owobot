@@ -1,17 +1,16 @@
 ﻿using System.Text;
 using Discord;
 using Discord.Interactions;
+using Discord.WebSocket;
+using owoBot.Application.Command.Services;
 using owoBot.Domain.Extensions;
-using owoBot.Module.OpenExchangeRate.Extensions;
-using owoBot.Module.OpenExchangeRate.Services;
 
 namespace owoBot.Application.Command.Interactions;
 
 [AutoConstructor]
 public partial class ExchangeSlashCommand : InteractionModuleBase
 {
-    private readonly ExchangeRateManager _exchangeRateManager;
-    private readonly TimeProvider _timeProvider;
+    private readonly ExchangeRateService _exchangeRateService;
 
     [SlashCommand("list-currencies", "Get all available currencies")]
     public async Task ListCurrenciesAsync(
@@ -19,7 +18,7 @@ public partial class ExchangeSlashCommand : InteractionModuleBase
         [Summary(description: "code search pattern, case insensitive, _ matches single char, % matches 0 or more chars")] string? codePattern = null,
         [Summary(description: "name search pattern, case insensitive, _ matches single char, % matches 0 or more chars")] string? namePattern = null)
     {
-        var currencies = await _exchangeRateManager.GetCurrencies(codePattern, namePattern);
+        var currencies = await _exchangeRateService.GetSupportedCurrenciesAsync(codePattern, namePattern);
         var totalPages = currencies.Count / 20 + 1;
 
         if (currencies.Count == 0)
@@ -41,7 +40,6 @@ public partial class ExchangeSlashCommand : InteractionModuleBase
             .Select(x => $"`{x.Code}` - {x.Name}")
             .JoinAsString("\n");
 
-
         var embed = new EmbedBuilder()
             .WithTitle($"Available Currencies ({page}/{totalPages})")
             .WithDescription(str)
@@ -54,43 +52,39 @@ public partial class ExchangeSlashCommand : InteractionModuleBase
     [SlashCommand("exchange", "Exchange currency")]
     public async Task ExchangeAsync(
         [Summary(description: "amount of source currency")] decimal amount,
-        [Summary(description: "source currency code")] string sourceCurrency,
-        [Summary(description: "target currency code")] string targetCurrency)
+        [Summary("source-currency", "source currency code"), Autocomplete] string sourceCurrency,
+        [Summary("target-currency", "target currency code"), Autocomplete] string targetCurrency)
     {
-        var currencies = await _exchangeRateManager.GetCurrencies();
-        if (currencies.Any(x => x.Code.Equals(sourceCurrency, StringComparison.OrdinalIgnoreCase)) is false)
+        var supportedCurrencies = await _exchangeRateService.GetSupportedCurrenciesAsync();
+        if (supportedCurrencies.Any(x => x.Code.Equals(sourceCurrency, StringComparison.OrdinalIgnoreCase)) is false)
         {
-            await RespondAsync($"Invalid source currency code: {sourceCurrency}");
+            await RespondAsync($"Unsupported source currency code: {sourceCurrency}");
             return;
         }
-        if (currencies.Any(x => x.Code.Equals(targetCurrency, StringComparison.OrdinalIgnoreCase)) is false)
+        if (supportedCurrencies.Any(x => x.Code.Equals(targetCurrency, StringComparison.OrdinalIgnoreCase)) is false)
         {
-            await RespondAsync($"Invalid target currency code: {targetCurrency}");
+            await RespondAsync($"Unsupported target currency code: {targetCurrency}");
             return;
         }
 
-        var result = await _exchangeRateManager.ExchangeAsync(amount, sourceCurrency, targetCurrency);
-        var msg = result.Format();
+        var sourceMoney = supportedCurrencies.First(x => x.Code.Equals(sourceCurrency, StringComparison.OrdinalIgnoreCase)).Have(amount);
+        var targetCurrencyCode = supportedCurrencies.First(x => x.Code.Equals(targetCurrency, StringComparison.OrdinalIgnoreCase));
+        var result = await _exchangeRateService.DirectExchangeAsync(sourceMoney.Currency, targetCurrencyCode);
 
-        var exchangeRateFields = result
-            .Select(x => $"`{x.Source}` -> `{x.Target}` = {x.Rate:0.##} ({x.Time:T})")
-            .JoinAsString("\n");
-        var allCurrencies = result
-            .Select(x => x.Source)
-            .Concat(result.Select(x => x.Target))
-            .Distinct()
-            .ToList();
-        var currencyNameFields = allCurrencies
-            .Select(x => currencies.First(c => c.Code == x))
-            .Select(x => $"`{x.Code}` - {x.Name}")
-            .JoinAsString("\n");
-
-        var remarks = new StringBuilder($"Time: {_timeProvider.GetUtcNow():R}");
-        if (result.Count > 1)
+        if (result is null)
         {
-            remarks.AppendLine();
-            remarks.Append("Note: Exchanged to USD first, may have slight difference compared to direct exchange");
+            await RespondAsync("Exchange rate not found");
+            return;
         }
+
+        var (exchangeRate, lastUpdateTime) = result.Value;
+        var targetMoney = targetCurrencyCode.Have(exchangeRate.Rate * amount);
+
+        var msg = $"{sourceMoney.FormatedAmountWithCurrency} = {targetMoney.FormatedAmountWithCurrency}";
+
+        var currencyNameFields = new StringBuilder();
+        currencyNameFields.AppendLine(sourceMoney.Currency.DisplayFormat);
+        currencyNameFields.AppendLine(targetMoney.Currency.DisplayFormat);
 
         var embed = new EmbedBuilder()
             .WithTitle("Exchange Result")
@@ -98,16 +92,56 @@ public partial class ExchangeSlashCommand : InteractionModuleBase
             .WithFields(
                 new EmbedFieldBuilder()
                     .WithName("Rates")
-                    .WithValue(exchangeRateFields),
+                    .WithValue($"{sourceMoney.Currency}:{targetMoney.Currency} = {exchangeRate.Rate:0.##}"),
                 new EmbedFieldBuilder()
                     .WithName("Currencies")
-                    .WithValue(currencyNameFields),
+                    .WithValue(currencyNameFields.ToString()),
                 new EmbedFieldBuilder()
                     .WithName("Remarks")
-                    .WithValue(remarks.ToString()))
+                    .WithValue($"Update Time: {lastUpdateTime:R}"))
+            .WithFooter("Powered by ExchangeRate-Api")
             .WithColor(Color.Blue)
             .Build();
 
         await RespondAsync(embed: embed);
+    }
+
+    [AutocompleteCommand("source-currency", "exchange")]
+    public async Task AutocompleteExchangeSourceCurrency()
+    {
+        var userInput = (Context.Interaction as SocketAutocompleteInteraction)?.Data.Current.Value.ToString();
+
+        var results = await GetCurrencyAutocompleteResults(userInput);
+
+        var task = (Context.Interaction as SocketAutocompleteInteraction)?.RespondAsync(results.Take(25));
+
+        if (task is not null)
+        {
+            await task;
+        }
+    }
+
+    [AutocompleteCommand("target-currency", "exchange")]
+    public async Task AutocompleteExchangeTargetCurrency()
+    {
+        var userInput = (Context.Interaction as SocketAutocompleteInteraction)?.Data.Current.Value.ToString();
+
+        var results = await GetCurrencyAutocompleteResults(userInput);
+
+        var task = (Context.Interaction as SocketAutocompleteInteraction)?.RespondAsync(results.Take(25));
+
+        if (task is not null)
+        {
+            await task;
+        }
+    }
+
+    private async Task<List<AutocompleteResult>> GetCurrencyAutocompleteResults(string? userInput)
+    {
+        var pattern = string.IsNullOrEmpty(userInput) ? null : $"{userInput}%";
+        var supportedCurrencies = await _exchangeRateService.GetSupportedCurrenciesAsync(pattern);
+        return supportedCurrencies
+            .Select(x => new AutocompleteResult($"{x} - {x.Name}", x.Code))
+            .ToList();
     }
 }

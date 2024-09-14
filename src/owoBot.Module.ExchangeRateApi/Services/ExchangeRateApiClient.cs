@@ -14,7 +14,7 @@ public partial class ExchangeRateApiClient
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
 
-    public async Task<ExchangeRateResponse> GetExchangeRate(CurrencyCode code)
+    public async Task<ExchangeRateResponse> GetExchangeRateAsync(CurrencyCode code)
     {
         var uri = Path.Join(BaseUrl, $"latest/{code}");
 
@@ -36,6 +36,17 @@ public partial class ExchangeRateApiClient
         return exchangeRateResponse;
     }
 
+    public async Task<Dictionary<string, string>> GetSupportedCurrenciesAsync()
+    {
+        var uri = Path.Join(BaseUrl, "codes");
+
+        var request = new HttpRequestMessage(HttpMethod.Get, uri);
+
+        var response = await SendRequestAsync<InternalCurrencyCodeResponse>(request);
+
+        return response.Codes.Where(x => x.Length == 2).ToDictionary(x => x[0], x => x[1]);
+    }
+
     private async Task<T> SendRequestAsync<T>(HttpRequestMessage request, CancellationToken? cancellationToken = null)
     {
         var response = await SendRequestAsync(request, cancellationToken);
@@ -50,8 +61,8 @@ public partial class ExchangeRateApiClient
         var ct = cancellationToken ?? CancellationToken.None;
 
         var httpClient = _httpClientFactory.CreateClient("Default");
-        var token = _configuration["Modules:OpenExchangeRate:AppId"];
-        request.Headers.Add("Authorization", $"Token {token}");
+        var token = _configuration["Modules:ExchangeRateApi:ApiKey"];
+        request.Headers.Add("Authorization", $"Bearer {token}");
         var response = await httpClient.SendAsync(request, ct);
 
         if (response.IsSuccessStatusCode is false)

@@ -1,9 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Http" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\owoBot.EntityFrameworkCore\owoBot.EntityFrameworkCore.csproj" />
-  </ItemGroup>
-</Project>

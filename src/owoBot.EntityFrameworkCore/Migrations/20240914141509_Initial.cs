@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Text.Json;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -12,12 +12,23 @@ namespace owoBot.EntityFrameworkCore.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "cache",
+                columns: table => new
+                {
+                    key = table.Column<string>(type: "text", nullable: false),
+                    value = table.Column<JsonDocument>(type: "jsonb", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_cache", x => x.key);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "currency_info",
                 columns: table => new
                 {
                     code = table.Column<string>(type: "text", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    last_updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,8 +41,7 @@ namespace owoBot.EntityFrameworkCore.Migrations
                 {
                     source = table.Column<string>(type: "text", nullable: false),
                     target = table.Column<string>(type: "text", nullable: false),
-                    rate = table.Column<decimal>(type: "numeric", nullable: false),
-                    last_updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                    rate = table.Column<decimal>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,6 +52,9 @@ namespace owoBot.EntityFrameworkCore.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "cache");
+
             migrationBuilder.DropTable(
                 name: "currency_info");
 

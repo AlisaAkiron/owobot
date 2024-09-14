@@ -13,7 +13,4 @@ public record ExchangeRate
 
     [Column("rate")]
     public decimal Rate { get; set; }
-
-    [Column("last_updated")]
-    public DateTimeOffset LastUpdated { get; set; }
 }

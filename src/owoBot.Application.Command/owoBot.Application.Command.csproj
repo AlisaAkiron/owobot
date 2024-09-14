@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\owoBot.EntityFrameworkCore\owoBot.EntityFrameworkCore.csproj" />
-    <ProjectReference Include="..\owoBot.Module.OpenExchangeRate\owoBot.Module.OpenExchangeRate.csproj" />
+    <ProjectReference Include="..\owoBot.Module.ExchangeRateApi\owoBot.Module.ExchangeRateApi.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Extensions.Logging.Abstractions">
