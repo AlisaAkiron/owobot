@@ -31,6 +31,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Module", "Module", "{D9B720
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "owoBot.Module.OpenExchangeRate", "src\owoBot.Module.OpenExchangeRate\owoBot.Module.OpenExchangeRate.csproj", "{2057F784-A1DC-49BC-AF14-8DA88F6EB96E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "owoBot.Module.ExchangeRateApi", "src\owoBot.Module.ExchangeRateApi\owoBot.Module.ExchangeRateApi.csproj", "{DBD6EAED-A134-4DB3-8040-AF6AE88C51E3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Roslyn", "Roslyn", "{2FD5E82E-8BD0-4810-8E8A-32C9D946DF15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "owoBot.Roslyn.SourceGenerator", "src\owoBot.Roslyn.SourceGenerator\owoBot.Roslyn.SourceGenerator.csproj", "{361BFD37-EAB3-4707-96A6-74C2F26B6BAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +47,8 @@ Global
 		{BB78068E-D03F-4202-BDEA-33828F977B77} = {7F041E2B-3D9B-4CA8-BBA3-7DC592218310}
 		{3E44477D-53E8-4105-B30B-89766C3F28C1} = {80C6D812-8694-4B5B-A8AD-44314E0F2126}
 		{2057F784-A1DC-49BC-AF14-8DA88F6EB96E} = {D9B7205E-ED06-4CCC-A943-7C4FF088FED0}
+		{DBD6EAED-A134-4DB3-8040-AF6AE88C51E3} = {D9B7205E-ED06-4CCC-A943-7C4FF088FED0}
+		{361BFD37-EAB3-4707-96A6-74C2F26B6BAE} = {2FD5E82E-8BD0-4810-8E8A-32C9D946DF15}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{532EE355-8642-4B76-B144-F3A0C77B066F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -71,5 +79,13 @@ Global
 		{2057F784-A1DC-49BC-AF14-8DA88F6EB96E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2057F784-A1DC-49BC-AF14-8DA88F6EB96E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2057F784-A1DC-49BC-AF14-8DA88F6EB96E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBD6EAED-A134-4DB3-8040-AF6AE88C51E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBD6EAED-A134-4DB3-8040-AF6AE88C51E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBD6EAED-A134-4DB3-8040-AF6AE88C51E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBD6EAED-A134-4DB3-8040-AF6AE88C51E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{361BFD37-EAB3-4707-96A6-74C2F26B6BAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{361BFD37-EAB3-4707-96A6-74C2F26B6BAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{361BFD37-EAB3-4707-96A6-74C2F26B6BAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{361BFD37-EAB3-4707-96A6-74C2F26B6BAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

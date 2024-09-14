@@ -3,4 +3,10 @@
     <PackageReference Include="Discord.Net" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\owoBot.Roslyn.SourceGenerator\owoBot.Roslyn.SourceGenerator.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\static\currencies.csv" />
+  </ItemGroup>
 </Project>
